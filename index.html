@@ -21,5 +21,38 @@
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+
+    <!-- Script to recolor 'smart transporation' or 'smart transportation' -->
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const re = /(smart\s*transporation|smart\s*transportation)/gi;
+
+        function walk(node) {
+          if (node.nodeType === 3) { // text node
+            if (re.test(node.nodeValue)) {
+              const parts = node.nodeValue.split(re);
+              const frag = document.createDocumentFragment();
+
+              parts.forEach(part => {
+                if (re.test(part)) {
+                  const s = document.createElement("span");
+                  s.style.color = "#000080";
+                  s.textContent = part;
+                  frag.appendChild(s);
+                } else if (part) {
+                  frag.appendChild(document.createTextNode(part));
+                }
+              });
+
+              node.parentNode.replaceChild(frag, node);
+            }
+          } else {
+            node.childNodes.forEach(walk);
+          }
+        }
+
+        walk(document.body);
+      });
+    </script>
   </body>
 </html>
